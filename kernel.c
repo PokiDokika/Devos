@@ -1,16 +1,14 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
- 
+#include "keyboard.h" 
+
 /* Check if the compiler thinks you are targeting the wrong operating system. */
 #if defined(__linux__)
 #error "You are not using a cross-compiler, you will most certainly run into trouble"
 #endif
  
-/* This tutorial will only work for the 32-bit ix86 targets. */
-#if !defined(__i386__)
-#error "This tutorial needs to be compiled with a ix86-elf compiler"
-#endif
+
  
 /* Hardware text mode color constants. */
 enum vga_color {
@@ -105,7 +103,6 @@ void terminal_write(const char* data, size_t size)
 		if(data[i] == '\n'){ terminal_newline(); continue;}
 		terminal_putchar(data[i]);
 	}
-	terminal_newline();
 }
  
 void terminal_writestring(const char* data) 
@@ -113,11 +110,37 @@ void terminal_writestring(const char* data)
 	terminal_write(data, strlen(data));
 }
 
+uint8_t inb(uint16_t port)
+{
+  uint8_t data;
+  asm volatile("inb %1, %0" : "=a"(data) : "Nd"(port));
+  return data;
+}
+
+uint8_t get_key(){
+  uint8_t keycode = 0;
+  while((keycode = inb(KEYBOARD_PORT)) != 0){
+    if(keycode > 0)
+      return keycode;
+  }
+  return keycode;	
+}
+
+
 
 void kernel_main(void) 
 {
 	/* Initialize terminal interface */
 	terminal_initialize();
  
-	terminal_writestring("DevOS first version boot :)\nVersion 0.01");
+	terminal_writestring("DevOS first version boot :)\nVersion 0.01\n");
+	uint8_t k;
+	while(1){
+		k = get_key();
+		// Do stuff with keypresses
+		if(k == KEY_A) terminal_writestring("a");
+		if(k == KEY_S) terminal_writestring("s");
+
+
+	}
 }
