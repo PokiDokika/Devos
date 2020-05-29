@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include "keyboard.h" 
+#include "keyboard.c" 
 /* Check if the compiler thinks you are targeting the wrong operating system. */
 #if defined(__linux__)
 #error "You are not using a cross-compiler, you will most certainly run into trouble"
@@ -90,6 +90,15 @@ void terminal_putchar(char c)
 	}
 }
 
+void terminal_removechar(){
+	terminal_putentryat(0, terminal_color, --terminal_column, terminal_row);
+	if (terminal_column == 0) {
+		terminal_column = VGA_WIDTH;
+		if (--terminal_row == 0)
+			terminal_row = VGA_HEIGHT;
+	}	
+}
+
 void terminal_newline(){
 	if (++terminal_row == VGA_HEIGHT)
 		terminal_row = 0;
@@ -104,46 +113,66 @@ void terminal_write(const char* data, size_t size)
 	}
 }
  
-void terminal_writestring(const char* data) 
+void printf(const char* data) 
 {
 	terminal_write(data, strlen(data));
 }
 
 
-// Reads and returns data from the keyboard
-static inline uint8_t inb(uint16_t port)
-{
-  uint8_t data;
-  asm volatile("inb %1, %0" : "=a"(data) : "Nd"(port));
-  return data;
+// Shell stuff (move to another file later)
+
+// Handle input
+void shell_command(char* cmd){
+	printf("\n");
+	printf(cmd);
 }
 
-uint8_t get_key(){
-  uint8_t keycode = 0;
-  // Check the keyboard status
-  uint8_t status = inb(KEYBOARD_STATUS);
-  if(status & 0x01){
-	while((keycode = inb(KEYBOARD_PORT)) != 0){
-		if(keycode > 0)
-		return keycode;
+void shell_putchar(char* cmd, uint8_t index, char c){
+	cmd[index] = c;
+	index++;
+	terminal_putchar(c);
+}
+void shell_removechar(char* cmd, uint8_t index){
+	if(index>0){
+		index--;
+		cmd[index] = 0;
+		terminal_removechar();
 	}
-  }
-  return keycode;
 }
 
+void shell_newline(char* cmd, uint8_t index){
+	if(cmd[0]!='\0'){
+		shell_command(cmd);
+		for(uint8_t i = index; i>0; i--){cmd[i-1] = '\0';}
+	}
+	printf("\nDevos> ");
+
+}
+
+
+void shell(){
+	uint8_t k;
+	char cmd[255];
+	uint8_t index = 0;
+	shell_newline(cmd,index);
+	while(1){
+		k = get_key();
+		char c = get_char(k);
+		switch(c){
+			case 0 : break;
+			case '\r' : shell_newline(cmd,index); index = 0; break;
+			case '\b' : shell_removechar(cmd, index); break;
+			default : shell_putchar(cmd, index, c); break;
+		}
+	}
+
+}
 
 void kernel_main(void) 
 {
 	/* Initialize terminal interface */
 	terminal_initialize();
  
-	terminal_writestring("DevOS first version boot :)\nVersion 0.01\n");
-	uint8_t k;
-	while(1){
-		k = get_key();
-		// Do stuff with keypresses (fix later)
-		if(k == KEY_A) terminal_writestring("a");
-		if(k == KEY_S) terminal_writestring("s");
-		
-	}
+	printf("DevOS first version boot :)\nVersion 0.01");
+	shell();
 }
