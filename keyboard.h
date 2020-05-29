@@ -2,7 +2,7 @@
 #define KEYBOARD_H
 
 #define KEYBOARD_PORT 0x60
-
+#define KEYBOARD_STATUS 0x64
 
 #define KEY_A 0x1E
 #define KEY_B 0x30

@@ -2,7 +2,6 @@
 #include <stddef.h>
 #include <stdint.h>
 #include "keyboard.h" 
-
 /* Check if the compiler thinks you are targeting the wrong operating system. */
 #if defined(__linux__)
 #error "You are not using a cross-compiler, you will most certainly run into trouble"
@@ -110,7 +109,9 @@ void terminal_writestring(const char* data)
 	terminal_write(data, strlen(data));
 }
 
-uint8_t inb(uint16_t port)
+
+// Reads and returns data from the keyboard
+static inline uint8_t inb(uint16_t port)
 {
   uint8_t data;
   asm volatile("inb %1, %0" : "=a"(data) : "Nd"(port));
@@ -119,13 +120,16 @@ uint8_t inb(uint16_t port)
 
 uint8_t get_key(){
   uint8_t keycode = 0;
-  while((keycode = inb(KEYBOARD_PORT)) != 0){
-    if(keycode > 0)
-      return keycode;
+  // Check the keyboard status
+  uint8_t status = inb(KEYBOARD_STATUS);
+  if(status & 0x01){
+	while((keycode = inb(KEYBOARD_PORT)) != 0){
+		if(keycode > 0)
+		return keycode;
+	}
   }
-  return keycode;	
+  return keycode;
 }
-
 
 
 void kernel_main(void) 
@@ -137,10 +141,9 @@ void kernel_main(void)
 	uint8_t k;
 	while(1){
 		k = get_key();
-		// Do stuff with keypresses
+		// Do stuff with keypresses (fix later)
 		if(k == KEY_A) terminal_writestring("a");
 		if(k == KEY_S) terminal_writestring("s");
-
-
+		
 	}
 }
