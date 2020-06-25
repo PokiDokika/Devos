@@ -2,15 +2,16 @@
 #include <stddef.h>
 #include <stdint.h>
 #include "terminal.c"
+#include "command.c"
 
 // For handling inputs.
 char cmd [255];
 uint8_t index = 0;
 
-
 void shell_command () { 
 	printf ("\n");
 	printf (cmd);
+	cmd_run (cmd);
 }
 
 void shell_putchar (char c) {
@@ -20,7 +21,6 @@ void shell_putchar (char c) {
 }
 
 void shell_removechar () {
-	
 	if (index > 0) {
 		index--;
 		cmd [index] = 0;
@@ -37,10 +37,7 @@ void shell_newline () {
 	printf ("\nDevos> ");
 }
 
-
-
 // Devos shell. 
-
 void shell () {
 	uint8_t key;
 	shell_newline (cmd,index);
@@ -55,4 +52,3 @@ void shell () {
 		}
 	}
 }
-
