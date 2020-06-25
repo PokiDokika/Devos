@@ -3,6 +3,38 @@
 #include <stdint.h>
 #include "terminal.c"
 
+// For handling inputs.
+
+void shell_command (char* cmd) { 
+	printf ("\n");
+	printf (cmd);
+}
+
+void shell_putchar (char* cmd, uint8_t index, char c) {
+	cmd [index] = c;
+	index++;
+	terminal_putchar (c);
+}
+
+void shell_removechar (char* cmd, uint8_t index) {
+	//printf (index);
+	if (index > 0) {
+		index--;
+		cmd [index] = 0;
+		terminal_removechar ();
+	}
+}
+
+void shell_newline (char* cmd, uint8_t index) {
+	if (cmd [0] != '\0') {
+		shell_command(cmd);
+		for (uint8_t i = index; i > 0; i--) {cmd[i-1] = '\0';}
+	}
+	printf ("\nDevos> ");
+}
+
+
+
 // Devos shell. 
 
 void shell () {
@@ -22,32 +54,3 @@ void shell () {
 	}
 }
 
-// For handling inputs.
-
-void shell_command (char* cmd) { 
-	printf ("\n");
-	printf (cmd);
-}
-
-void shell_putchar (char* cmd, uint8_t index, char c) {
-	cmd [index] = c;
-	index++;
-	terminal_putchar (c);
-}
-
-void shell_removechar (char* cmd, uint8_t index) {
-	printf (index);
-//	if (index > 0) {
-		index--;
-		cmd [index] = 0;
-		terminal_removechar ();
-//	}
-}
-
-void shell_newline (char* cmd, uint8_t index) {
-	if (cmd [0] != '\0') {
-		shell_command(cmd);
-		for (uint8_t i = index; i > 0; i--) {cmd[i-1] = '\0';}
-	}
-	printf ("\nDevos> ");
-}

@@ -14,7 +14,6 @@
 void kernel_main (void) {
 	/* Initialize terminal interface */
 	terminal_initialize ();
- 
 	printf ("DevOS first version boot :)\nVersion 0.01");
 	shell ();
 }
