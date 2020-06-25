@@ -11,5 +11,5 @@ void cmd_run () {
 
 extern char cmd[255];
 void cmd_run () {
-
+	printf ("\nran: "); printf (cmd);
 }
