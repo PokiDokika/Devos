@@ -4,7 +4,6 @@
 #include "terminal.c"
 
 // For handling inputs.
-uint8_t key;
 char cmd [255];
 uint8_t index = 0;
 
@@ -21,7 +20,7 @@ void shell_putchar (char c) {
 }
 
 void shell_removechar () {
-	//printf (index);
+	
 	if (index > 0) {
 		index--;
 		cmd [index] = 0;
@@ -43,6 +42,7 @@ void shell_newline () {
 // Devos shell. 
 
 void shell () {
+	uint8_t key;
 	shell_newline (cmd,index);
 	while (1) {
 		key = get_key ();

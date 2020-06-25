@@ -93,6 +93,8 @@ void terminal_removechar () {
 	}	
 }
 
+
+
 void terminal_newline () {
 	if (++terminal_row == VGA_HEIGHT)
 		terminal_row = 0;
