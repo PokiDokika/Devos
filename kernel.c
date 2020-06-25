@@ -11,10 +11,10 @@
 #endif
  
 
-void kernel_main(void) {
+void kernel_main (void) {
 	/* Initialize terminal interface */
-	terminal_initialize();
+	terminal_initialize ();
  
-	printf("DevOS first version boot :)\nVersion 0.01");
-	shell();
+	printf ("DevOS first version boot :)\nVersion 0.01");
+	shell ();
 }

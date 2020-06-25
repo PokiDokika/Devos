@@ -4,19 +4,19 @@
 #include "keyboard.h"
 
 // Reads and returns data from the keyboard
-static inline uint8_t inb(uint16_t port) {
+static inline uint8_t inb (uint16_t port) {
 	uint8_t data;
-	asm volatile("inb %1, %0" : "=a"(data) : "Nd"(port));
+	asm volatile ("inb %1, %0" : "=a"(data) : "Nd" (port));
 	return data;
 }
 
-uint8_t get_key() {
+uint8_t get_key () {
 	uint8_t keycode = 0;
 	// Check the keyboard status
-	uint8_t status = inb(KEYBOARD_STATUS);
-	if(status & 0x01) {
-		while((keycode = inb(KEYBOARD_PORT)) != 0) {
-			if(keycode > 0)
+	uint8_t status = inb (KEYBOARD_STATUS);
+	if (status & 0x01) {
+		while ((keycode = inb (KEYBOARD_PORT)) != 0) {
+			if (keycode > 0)
 			return keycode;
 		}
   	}
@@ -24,8 +24,8 @@ uint8_t get_key() {
 } 
 
 // This is horrible. If you can come up with a better method then please replace this.
-char get_char(uint8_t code) {
-	switch(code) {
+char get_char (uint8_t code) {
+	switch (code) {
 		case KEY_A : return 'a';
 		case KEY_B : return 'b';
 		case KEY_C : return 'c';
@@ -80,6 +80,7 @@ char get_char(uint8_t code) {
 
             	case KEY_ENTER : return '\r';
             	case KEY_BACKSPACE : return '\b';
+            	case KEY_DELETE : return '\e';
 
             	default : return 0;
 	}
