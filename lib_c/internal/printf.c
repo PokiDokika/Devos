@@ -3,6 +3,9 @@
 
 #include "printf_conv.h"
 #include "printf.h"
+#include "../string.h"
+#include "../stdio.h"
+
 #include "../../terminal.h"
 
 /*
@@ -20,13 +23,11 @@ void __tty_printio(char char_append, char* restrict buffer, size_t idx)
 		terminal_putchar(char_append);
 }
 
-void __strn_print(void (*io_func)(char, char*, size_t), char* str_append, char* buffer, size_t max, size_t* idx) 
+void __strn_print(void (*io_func)(char, char*, size_t), char* str_append, char* buffer, size_t size, size_t* idx) 
 {
-	size_t str_idx = 0;
-	char idx_chr;
-
-	while (*idx++ < max && (idx_chr = *(str_append + str_idx++)))
-		io_func(idx_chr, buffer, *idx);
+	char* ptr_str = str_append;
+	for (; ptr_str - str_append < size && *ptr_str; ptr_str++)
+		io_func(*ptr_str, buffer, *idx);
 }
 
 void __strn_pad_print(void (*io_out)(char, char*, size_t), char* str_append, char* restrict buffer, size_t size, char pad, bool right, size_t* idx) 
@@ -39,6 +40,9 @@ void __strn_pad_print(void (*io_out)(char, char*, size_t), char* str_append, cha
 
 	size_t n;
 	size_t str_len = strlen(str_append);
+
+	if (size < str_len)
+		size = str_len;
 
 	for (n = 0; n < size; n++)
 	{
@@ -53,7 +57,7 @@ void __strn_pad_print(void (*io_out)(char, char*, size_t), char* str_append, cha
 		{
 			// Is this right...?
 			if (str_len + n >= size)
-				buf_append[n] = str_append[str_len - (size - n)];
+				buf_append[n] = str_append[str_len - size + n];
 		}
 	}
     
@@ -90,14 +94,16 @@ size_t __base_vprintf(char* output_buffer, void (*io_func)(char, char*, size_t),
 				 append_space = false,
 				 alternative = false;
 
-			char width = -1, 
-				 precision = 7,
-				 fmt_type = '\0';
+			int width = -1, 
+				precision = 7;
+			
+			char fmt_type = '\0';
 
-			// [bjrkk] I feel like this code could be improved...
-			for (char y = 0; y < 4; y++)
+			// [bjrkk] Should correctly parse this stuff now;
+			char param_char;
+			do
 			{
-				char param_char = fmt_buffer[++i];
+				param_char = fmt_buffer[++i];
 
 				if (param_char == FLAG_LEFT_ALLIGN)
 					left_allign = true;
@@ -106,16 +112,9 @@ size_t __base_vprintf(char* output_buffer, void (*io_func)(char, char*, size_t),
 				else if (param_char == FLAG_APPEND_ZERO && !append_zero)
 					append_zero = true;
 				else if (param_char == FLAG_APPEND_SPACE)
-				{
-					if (append_space)
-						break;
-					
 					append_space = true;
-				}
 				else if (param_char == FLAG_ALTERNATIVE)
 					alternative = true;
-				else if (param_char >= '0' && param_char <= '9')
-					width = param_char - '0';
 				else if (param_char == FLAG_DYNAMIC)
 					width = va_arg(variadic_list, char);
 				else if (param_char == '.')
@@ -127,12 +126,21 @@ size_t __base_vprintf(char* output_buffer, void (*io_func)(char, char*, size_t),
 					else if (param_char >= '0' || param_char <= '9')
 						precision = param_char - '0';
 				}
+				else if (param_char >= '0' && param_char <= '9')
+				{
+					if (width < 0)
+						width = 0;
+
+					width *= 10;
+					width += param_char - '0';
+				}
 				else
 				{
 					fmt_type = param_char;
 					break;
 				}
-			}
+			} 
+			while (fmt_type == '\0' && param_char != '\0');
 
 			switch (fmt_type)
 			{

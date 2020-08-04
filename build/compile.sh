@@ -5,7 +5,7 @@ CC=i686-elf-gcc
 #AC=nasm
 AC=i686-elf-as
 
-CCFLAGS="-std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32"
+CCFLAGS="-std=gnu2x -ffreestanding -O2 -Wall -Wextra -m32"
 # ACFLAGS="-felf32"
 ACFLAGS=""
 

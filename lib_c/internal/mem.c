@@ -1,19 +1,6 @@
 #include <stdarg.h>
 #include <stddef.h>
 
-#include "i386/mem_i386.h"
-
-#ifdef __i386__
-void* __memset(void* ptr, int value, size_t num) 
-{
-    return __memset_i386(ptr, value, num);
-}
-
-void* __memcpy(void* dest, const void* src, size_t num) 
-{
-    return __memcpy_i386(dest, src, num);
-}
-#else
 void* __memset(void* ptr, int value, size_t num) 
 {
     unsigned char* buf_ptr = (unsigned char*)ptr;
@@ -29,7 +16,6 @@ void* __memcpy(void* dest, const void* src, size_t num)
     for (; num; num--) *(buf_dest++) = *(buf_src++);
     return dest;
 }
-#endif
 
 char __memcmp(const void* a, const void* b, size_t num) 
 {
