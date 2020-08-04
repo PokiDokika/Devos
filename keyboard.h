@@ -85,6 +85,16 @@
 #define KEY_TAB 0x0F
 #define KEY_UP 0x48
 
+// Reads and returns data from the keyboard
+static inline uint8_t inb (uint16_t port) {
+	uint8_t data;
+	asm volatile ("inb %1, %0" : "=a"(data) : "Nd" (port));
+	return data;
+}
+
+uint8_t get_key();
+
+char get_char(uint8_t code);
 
 #endif
  

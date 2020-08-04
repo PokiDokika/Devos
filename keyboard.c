@@ -3,13 +3,6 @@
 #include <stdint.h>
 #include "keyboard.h"
 
-// Reads and returns data from the keyboard
-static inline uint8_t inb (uint16_t port) {
-	uint8_t data;
-	asm volatile ("inb %1, %0" : "=a"(data) : "Nd" (port));
-	return data;
-}
-
 uint8_t get_key () {
 	uint8_t keycode = 0;
 	// Check the keyboard status
@@ -53,35 +46,35 @@ char get_char (uint8_t code) {
 		case KEY_Y : return 'y';
 		case KEY_Z : return 'z';
             
-           	case KEY_0 : return '0';
-           	case KEY_1 : return '1';
+        case KEY_0 : return '0';
+        case KEY_1 : return '1';
 		case KEY_2 : return '2';
 		case KEY_3 : return '3';
-           	case KEY_4 : return '4';
-            	case KEY_5 : return '5';
-            	case KEY_6 : return '6';
-            	case KEY_7 : return '7';
-            	case KEY_8 : return '8';
-            	case KEY_9 : return '9';
+        case KEY_4 : return '4';
+        case KEY_5 : return '5';
+        case KEY_6 : return '6';
+        case KEY_7 : return '7';
+        case KEY_8 : return '8';
+        case KEY_9 : return '9';
 
 
-            	case KEY_SPACE: return ' ';
-            	case KEY_DOT: return '.';
-            	case KEY_COMMA: return ',';
-            	case KEY_SEMICOLON: return ';';
-           	case KEY_EQUAL : return '=';
-            	case KEY_DASH : return '-';
-            	case KEY_FORESLASH : return '/';
-            	case KEY_BACKSLASH : return '\\';
-            	case KEY_SQUARE_OPEN_BRACKET : return '[';
-            	case KEY_SQUARE_CLOSE_BRACKET : return ']';
-            	case KEY_APOSTROPHE : return '\'';
-            	case KEY_TILDE : return '~';
+        case KEY_SPACE: return ' ';
+        case KEY_DOT: return '.';
+        case KEY_COMMA: return ',';
+        case KEY_SEMICOLON: return ';';
+        case KEY_EQUAL : return '=';
+		case KEY_DASH : return '-';
+        case KEY_FORESLASH : return '/';
+        case KEY_BACKSLASH : return '\\';
+        case KEY_SQUARE_OPEN_BRACKET : return '[';
+        case KEY_SQUARE_CLOSE_BRACKET : return ']';
+        case KEY_APOSTROPHE : return '\'';
+        case KEY_TILDE : return '~';
 
-            	case KEY_ENTER : return '\r';
-            	case KEY_BACKSPACE : return '\b';
-            	case KEY_DELETE : return '\e';
+        case KEY_ENTER : return '\r';
+        case KEY_BACKSPACE : return '\b';
+        case KEY_DELETE : return '\e';
 
-            	default : return 0;
+        default : return 0;
 	}
 }
