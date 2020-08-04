@@ -10,13 +10,13 @@ Specific I/O functions for the kernel.
 */
 void __buf_printio(char char_append, char* restrict buffer, size_t idx)     
 { 
-    buffer[idx] = char_append; 
+	buffer[idx] = char_append; 
 }
 
 void __tty_printio(char char_append, char* restrict buffer, size_t idx)     
 { 
 	//terminal_write
-    if (char_append)
+	if (char_append)
 		terminal_putchar(char_append);
 }
 
@@ -27,40 +27,38 @@ void __strn_print(void (*io_func)(char, char*, size_t), char* str_append, char* 
 
 	while (*idx++ < max && (idx_chr = *(str_append + str_idx++)))
 		io_func(idx_chr, buffer, *idx);
-
-	
 }
 
 void __strn_pad_print(void (*io_out)(char, char*, size_t), char* str_append, char* restrict buffer, size_t size, char pad, bool right, size_t* idx) 
 {
-    if (size == SIZE_MAX)
-        return __strn_print(io_out, str_append, buffer, size, idx);
+	if (size == SIZE_MAX)
+		return __strn_print(io_out, str_append, buffer, size, idx);
 
-    bool append_string = right;
-    char buf_append[size + 1];
+	bool append_string = right;
+	char buf_append[size + 1];
 
-    size_t n;
-    size_t str_len = strlen(str_append);
+	size_t n;
+	size_t str_len = strlen(str_append);
 
-    for (n = 0; n < size; n++)
-    {
-        buf_append[n] = pad;
+	for (n = 0; n < size; n++)
+	{
+		buf_append[n] = pad;
 
-        if (right)
-        {
-            if (str_len > n)
-                buf_append[n] = str_append[n];
-        }
-        else
-        {
+		if (right)
+		{
+			if (str_len > n)
+				buf_append[n] = str_append[n];
+		}
+		else
+		{
 			// Is this right...?
-            if (str_len + n >= size)
-                buf_append[n] = str_append[str_len - (size - n)];
-        }
-    }
+			if (str_len + n >= size)
+				buf_append[n] = str_append[str_len - (size - n)];
+		}
+	}
     
-    buf_append[size] = '\0';
-    return __strn_print(io_out, buf_append, buffer, size, idx);
+	buf_append[size] = '\0';
+	return __strn_print(io_out, buf_append, buffer, size, idx);
 }
 
 void __str_print(void (*io_func)(char, char*, size_t), char* str_append, char* buffer, size_t* idx)
@@ -78,11 +76,11 @@ Use this for any printf-related functions.
 size_t __base_vprintf(char* output_buffer, void (*io_func)(char, char*, size_t), const char* restrict fmt_buffer, size_t max, va_list variadic_list)
 {
 	size_t idx = 0;
-	
+		
 	for (size_t i = 0; i < max; i++)
 	{
 		char idx_char = fmt_buffer[i];
-		
+
 		if (idx_char == '%')
 		{
 			bool uppercase = false,
@@ -93,48 +91,48 @@ size_t __base_vprintf(char* output_buffer, void (*io_func)(char, char*, size_t),
 				 alternative = false;
 
 			char width = -1, 
-			     precision = 7,
+				 precision = 7,
 				 fmt_type = '\0';
 
 			// [bjrkk] I feel like this code could be improved...
 			for (char y = 0; y < 4; y++)
-            {
+			{
 				char param_char = fmt_buffer[++i];
 
-                if (param_char == FLAG_LEFT_ALLIGN)
-                    left_allign = true;
-                else if (param_char == FLAG_APPEND_PLUS)
-                    append_plus = true;
-                else if (param_char == FLAG_APPEND_ZERO && !append_zero)
+				if (param_char == FLAG_LEFT_ALLIGN)
+					left_allign = true;
+				else if (param_char == FLAG_APPEND_PLUS)
+					append_plus = true;
+				else if (param_char == FLAG_APPEND_ZERO && !append_zero)
 					append_zero = true;
-                else if (param_char == FLAG_APPEND_SPACE)
-                {
-                    if (append_space)
-                        break;
-                    
-                    append_space = true;
-                }
-                else if (param_char == FLAG_ALTERNATIVE)
-                    alternative = true;
-                else if (param_char >= '0' && param_char <= '9')
-                    width = param_char - '0';
+				else if (param_char == FLAG_APPEND_SPACE)
+				{
+					if (append_space)
+						break;
+					
+					append_space = true;
+				}
+				else if (param_char == FLAG_ALTERNATIVE)
+					alternative = true;
+				else if (param_char >= '0' && param_char <= '9')
+					width = param_char - '0';
 				else if (param_char == FLAG_DYNAMIC)
 					width = va_arg(variadic_list, char);
-                else if (param_char == '.')
-                {
+				else if (param_char == '.')
+				{
 					param_char = fmt_buffer[++i];
 
 					if (param_char == FLAG_DYNAMIC)
 						precision = va_arg(variadic_list, char);
 					else if (param_char >= '0' || param_char <= '9')
-                        precision = param_char - '0';
-                }
-                else
-                {
-                    fmt_type = param_char;
-                    break;
-                }
-            }
+						precision = param_char - '0';
+				}
+				else
+				{
+					fmt_type = param_char;
+					break;
+				}
+			}
 
 			switch (fmt_type)
 			{
@@ -235,15 +233,15 @@ Internal printf functions.
 
 size_t __vprintf(const char* restrict text, va_list variadic_list)                             
 { 
-    return __base_vprintf(NULL, __tty_printio, text, -1, variadic_list);
+	return __base_vprintf(NULL, __tty_printio, text, -1, variadic_list);
 }
 
 size_t __vsnprintf(char* buffer, const char* restrict text, size_t max, va_list variadic_list) 
 { 
-    return __base_vprintf(buffer, __buf_printio, text, max, variadic_list); 
+	return __base_vprintf(buffer, __buf_printio, text, max, variadic_list); 
 }
 
 size_t __vsprintf(char* buffer, const char* restrict text, va_list variadic_list)              
 { 
-    return __vsnprintf(buffer, text, -1, variadic_list); 
+	return __vsnprintf(buffer, text, -1, variadic_list); 
 }
