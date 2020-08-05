@@ -39,8 +39,14 @@ char* __ntoa(unsigned long val, unsigned char base, bool negative, bool uppercas
     return str;
 }
 
-// [bjrkk] FIXME: This should be improved.
-char* __ftoa(double value, unsigned int precision, bool uppercase)
+/* [bjrkk] FIXME: This should be improved.
+
+                  Uppercase is now set as unused 
+                  until this gets proper scientific notation support.
+
+                  Precision is only limited to 0-8.
+*/
+char* __ftoa(double value, unsigned int precision, __attribute__((unused)) bool uppercase)
 {
     static long pow_10s[8] = 
     { 
@@ -56,13 +62,15 @@ char* __ftoa(double value, unsigned int precision, bool uppercase)
     static char str[32];
     char* ptr = str;
 
-    for (char* high_buf = __ntoa(high, 10, 0, 0); *high_buf; high_buf++) *ptr++ = *high_buf;
+    for (char* high_buf = __ntoa(high, 10, 0, 0); *high_buf; high_buf++) 
+        *ptr++ = *high_buf;
     
     if (precision != 0)
     {
         *ptr++ = '.';
         char* low_buf = __ntoa(low, 10, 0, 0);
-        for (; *low_buf; low_buf++) *ptr++ = *low_buf;
+        for (; *low_buf; low_buf++) 
+            *ptr++ = *low_buf;
     }
 
     *ptr++ = '\0';

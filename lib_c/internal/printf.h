@@ -8,7 +8,9 @@
 #define FLAG_APPEND_SPACE       ' '
 #define FLAG_APOSTROPHE         '`'
 #define FLAG_ALTERNATIVE        '#'
-#define FLAG_DYNAMIC            '*'
+
+#define NUM_DYNAMIC             '*'
+#define NUM_PRECISION           '.'
 
 /*
 Specific I/O functions for the kernel.

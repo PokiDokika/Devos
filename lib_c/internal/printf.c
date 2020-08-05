@@ -16,9 +16,8 @@ void __buf_printio(char char_append, char* restrict buffer, size_t idx)
 	buffer[idx] = char_append; 
 }
 
-void __tty_printio(char char_append, char* restrict buffer, size_t idx)     
-{ 
-	//terminal_write
+void __tty_printio(char char_append, __attribute__((unused)) char* restrict buffer, __attribute__((unused)) size_t idx)     
+{
 	if (char_append)
 		terminal_putchar(char_append);
 }
@@ -26,7 +25,7 @@ void __tty_printio(char char_append, char* restrict buffer, size_t idx)
 void __strn_print(void (*io_func)(char, char*, size_t), char* str_append, char* buffer, size_t size, size_t* idx) 
 {
 	char* ptr_str = str_append;
-	for (; ptr_str - str_append < size && *ptr_str; ptr_str++)
+	for (; (size_t)(ptr_str - str_append) < size && *ptr_str; ptr_str++)
 		io_func(*ptr_str, buffer, *idx);
 }
 
@@ -35,7 +34,6 @@ void __strn_pad_print(void (*io_out)(char, char*, size_t), char* str_append, cha
 	if (size == SIZE_MAX)
 		return __strn_print(io_out, str_append, buffer, size, idx);
 
-	bool append_string = right;
 	char buf_append[size + 1];
 
 	size_t n;
@@ -96,6 +94,8 @@ size_t __base_vprintf(char* output_buffer, void (*io_func)(char, char*, size_t),
 
 			int width = -1, 
 				precision = 7;
+
+			int* param_ptr = &width;
 			
 			char fmt_type = '\0';
 
@@ -109,30 +109,26 @@ size_t __base_vprintf(char* output_buffer, void (*io_func)(char, char*, size_t),
 					left_allign = true;
 				else if (param_char == FLAG_APPEND_PLUS)
 					append_plus = true;
-				else if (param_char == FLAG_APPEND_ZERO && !append_zero)
+				else if (param_char == FLAG_APPEND_ZERO)
 					append_zero = true;
-				else if (param_char == FLAG_APPEND_SPACE)
+				else if (param_char == FLAG_APPEND_SPACE && !append_plus)
 					append_space = true;
 				else if (param_char == FLAG_ALTERNATIVE)
 					alternative = true;
-				else if (param_char == FLAG_DYNAMIC)
-					width = va_arg(variadic_list, char);
-				else if (param_char == '.')
+				else if (param_char == NUM_DYNAMIC)
+					width = va_arg(variadic_list, int);
+				else if (param_char == NUM_PRECISION)
 				{
-					param_char = fmt_buffer[++i];
-
-					if (param_char == FLAG_DYNAMIC)
-						precision = va_arg(variadic_list, char);
-					else if (param_char >= '0' || param_char <= '9')
-						precision = param_char - '0';
+					precision = 0;
+					param_ptr = &precision;
 				}
 				else if (param_char >= '0' && param_char <= '9')
 				{
-					if (width < 0)
-						width = 0;
+					if (*param_ptr < 0)
+						*param_ptr = 0;
 
-					width *= 10;
-					width += param_char - '0';
+					*param_ptr *= 10;
+					*param_ptr += param_char - '0';
 				}
 				else
 				{
@@ -142,16 +138,23 @@ size_t __base_vprintf(char* output_buffer, void (*io_func)(char, char*, size_t),
 			} 
 			while (fmt_type == '\0' && param_char != '\0');
 
+			char pad_char = append_zero ? '0' : ' ';
+
 			switch (fmt_type)
 			{
 				case 'i':
 				case 'd':
+					if (append_plus)
+						io_func('+', output_buffer, idx++);
+					else if (append_space)
+						io_func(' ', output_buffer, idx++);
+
 					__strn_pad_print(
 						io_func,
 						__ntoa(va_arg(variadic_list, long), 10, true, uppercase),
 						output_buffer,
 						width,
-						'0',
+						pad_char,
 						left_allign,
 						&idx
 					);
@@ -162,7 +165,7 @@ size_t __base_vprintf(char* output_buffer, void (*io_func)(char, char*, size_t),
 						__ntoa(va_arg(variadic_list, unsigned long), 10, false, uppercase),
 						output_buffer,
 						width,
-						'0',
+						pad_char,
 						left_allign,
 						&idx
 					);
@@ -170,9 +173,14 @@ size_t __base_vprintf(char* output_buffer, void (*io_func)(char, char*, size_t),
 				case 'F':
 					uppercase = true;
 				case 'f':
+					if (append_plus)
+						io_func('+', output_buffer, idx++);
+					else if (append_space)
+						io_func(' ', output_buffer, idx++);
+
 					__str_print(
 						io_func,
-						__ftoa(va_arg(variadic_list, float), precision, uppercase),
+						__ftoa(va_arg(variadic_list, double), precision, uppercase),
 						output_buffer,
 						&idx
 					);
@@ -181,28 +189,45 @@ size_t __base_vprintf(char* output_buffer, void (*io_func)(char, char*, size_t),
 					uppercase = true;
 				case 'x':
 					if (alternative)
-                        if (uppercase)
+                    {
+						if (uppercase)
                         	__str_print(io_func, "0X", output_buffer, &idx);
                         else
                             __str_print(io_func, "0x", output_buffer, &idx);
+					}
 
 					__strn_pad_print(
 						io_func,
 						__ntoa(va_arg(variadic_list, long), 16, false, uppercase),
 						output_buffer,
 						width,
-						'0',
+						pad_char,
 						left_allign,
 						&idx
 					);
 					break;
+				case 'o':
+					if (alternative)
+                       io_func('0', output_buffer, idx++);
+
+					__strn_pad_print(
+						io_func,
+						__ntoa(va_arg(variadic_list, long), 8, false, uppercase),
+						output_buffer,
+						width,
+						pad_char,
+						left_allign,
+						&idx
+					);
+					break;
+				// [bjrkk] Non-standard. Should probably get removed...?
 				case 'b':
 					__strn_pad_print(
 						io_func,
 						__ntoa(va_arg(variadic_list, long), 2, false, uppercase),
 						output_buffer,
 						width,
-						'0',
+						pad_char,
 						left_allign,
 						&idx
 					);
