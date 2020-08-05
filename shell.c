@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include "lib_c/stdio.h"
+#include "lib_c/string.h"
 #include "terminal.h"
 #include "command.h"
 #include "keyboard.h"
@@ -25,6 +26,7 @@ void shell_putchar (char c) {
 	cmd [index] = c;
 	index++;
 	terminal_putchar (c);
+	update_cursor();
 }
 
 void shell_removechar () {
@@ -32,14 +34,15 @@ void shell_removechar () {
 		index--;
 		cmd [index] = 0;
 		terminal_removechar ();
+		update_cursor();
 	}
 }
 
 void shell_newline () {
-	print("\n");
+	putc('\n');
 	if (cmd [0] != '\0') {
 		shell_command(cmd);
-		for (uint8_t i = index; i > 0; i--) {cmd[i-1] = '\0';}
+		memset(cmd, '\0', index);
 	}
 	index = 0;
 	printf ("\nDevos> ");

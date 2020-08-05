@@ -5,16 +5,16 @@
 #include "string.h"
 #include "../terminal.h"
 
-void putchar(int c) 
+void putc(int c) 
 {
     terminal_putchar(c);
+    update_cursor();
 }
 
-size_t print(const char* restrict text) 
-{ 
-    size_t size = strlen(text);
-    terminal_write(text, size);
-    return size;
+void puts(const char* restrict text) 
+{
+    terminal_write(text);
+    update_cursor();
 }
 
 size_t printf(const char* restrict text, ...)
@@ -23,6 +23,7 @@ size_t printf(const char* restrict text, ...)
     va_start(variadic_list, text);
 
     size_t return_idx = __vprintf(text, variadic_list);
+    update_cursor();
 
     va_end(variadic_list);
 

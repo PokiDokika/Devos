@@ -41,9 +41,13 @@ uint8_t terminal_color;
 uint16_t* terminal_buffer;
 
 void terminal_initialize(void);
+void update_cursor();
+void terminal_setcursorpos(int x, int y);
+void terminal_setcursorindex(int i);
 void terminal_setcolor(uint8_t);
 void terminal_putentryat(char, uint8_t, size_t, size_t);
 void terminal_putchar(char);
 void terminal_removechar();
 void terminal_newline();
-void terminal_write(const char*, size_t);
+void terminal_write(const char*);
+void terminal_writen(const char*, size_t);
