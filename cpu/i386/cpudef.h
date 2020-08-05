@@ -3,8 +3,8 @@
 
 typedef struct DT_Ptr
 {
-    unsigned short limit;
-    void* base;
+	unsigned short limit;
+	void* base;
 } __attribute__((packed)) DT_Ptr; 
 
 static inline void CPU_Halt()               
@@ -22,11 +22,11 @@ static inline void CPU_ClearInterrupts()
 
 static inline uint8_t IO_Inb(uint16_t port)
 {
-    uint8_t ret;
-    asm ( "inb %1, %0"
-                : "=a"(ret)
-                : "Nd"(port) );
-    return ret;
+	uint8_t ret;
+	asm ( "inb %1, %0"
+				: "=a"(ret)
+				: "Nd"(port) );
+	return ret;
 }
 static inline void IO_Outb(uint16_t port, uint8_t val) 
 { 
