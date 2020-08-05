@@ -40,6 +40,7 @@ size_t terminal_column;
 uint8_t terminal_color;
 uint16_t* terminal_buffer;
 
+void terminal_clear();
 void terminal_initialize(void);
 void update_cursor();
 void terminal_setcursorpos(int x, int y);

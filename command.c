@@ -42,6 +42,8 @@ void cmd_run()
 		printf("Pong!\n");
 	else if (!strcmp(cmd_name, "echo"))
 		printf("%s\n", cmd_args);
+	else if (!strcmp(cmd_name, "clear") || !strcmp(cmd_name, "cls"))
+		terminal_clear();
 	else if (!strcmp(cmd_name, "fg"))
 	{
 		uint8_t new_color = (terminal_color & 0xF0) + (__aton(cmd_args) & 0x0F);
