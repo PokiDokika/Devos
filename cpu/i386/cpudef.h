@@ -24,16 +24,18 @@ static inline uint8_t IO_Inb(uint16_t port)
 {
 	uint8_t ret;
 	asm ( "inb %1, %0"
-				: "=a"(ret)
-				: "Nd"(port) );
+			: "=a"(ret)
+			: "Nd"(port) );
 	return ret;
 }
 static inline void IO_Outb(uint16_t port, uint8_t val) 
 { 
-	asm ( "outb %0, %1" : : "a"(val), "Nd"(port) ); 
+	asm ( "outb %0, %1" 
+			:: "a"(val), "Nd"(port) ); 
 }
 
 static inline void IO_Wait() 
 { 
-	asm ( "outb %%al, $0x80" : : "a"(0) ); 
+	asm ( "outb %%al, $0x80" 
+			:: "a"(0) ); 
 }

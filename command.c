@@ -8,18 +8,18 @@
 // [bjrkk] FIXME: implement it as part of lib_c maybe?
 unsigned long __aton(char* buffer)
 {
-    unsigned long buf_conversion = 0;
+	unsigned long buf_conversion = 0;
 
-    for (; *buffer; buffer++)
-    {
-        char c = *buffer - '0';
-        if (c < 0 || c > 9) continue;
+	for (; *buffer; buffer++)
+	{
+		char c = *buffer - '0';
+		if (c < 0 || c > 9) continue;
 
-        buf_conversion *= 10;
-        buf_conversion += c;
-    }
+		buf_conversion *= 10;
+		buf_conversion += c;
+	}
 
-    return buf_conversion;
+	return buf_conversion;
 }
 
 extern char cmd[255];

@@ -2,15 +2,15 @@
 #include <stdarg.h>
 #include <stdbool.h>
 
-#define FLAG_LEFT_ALLIGN        '-'
-#define FLAG_APPEND_PLUS        '+'
-#define FLAG_APPEND_ZERO        '0'
-#define FLAG_APPEND_SPACE       ' '
-#define FLAG_APOSTROPHE         '`'
-#define FLAG_ALTERNATIVE        '#'
+#define FLAG_LEFT_ALLIGN		'-'
+#define FLAG_APPEND_PLUS		'+'
+#define FLAG_APPEND_ZERO		'0'
+#define FLAG_APPEND_SPACE		' '
+#define FLAG_APOSTROPHE			'`'
+#define FLAG_ALTERNATIVE		'#'
 
-#define NUM_DYNAMIC             '*'
-#define NUM_PRECISION           '.'
+#define NUM_DYNAMIC				'*'
+#define NUM_PRECISION			'.'
 
 /*
 Specific I/O functions for the kernel.

@@ -11,12 +11,12 @@
 /*
 Specific I/O functions for the kernel.
 */
-void __buf_printio(char char_append, char* restrict buffer, size_t idx)     
+void __buf_printio(char char_append, char* restrict buffer, size_t idx)	 
 { 
 	buffer[idx] = char_append; 
 }
 
-void __tty_printio(char char_append, __attribute__((unused)) char* restrict buffer, __attribute__((unused)) size_t idx)     
+void __tty_printio(char char_append, __attribute__((unused)) char* restrict buffer, __attribute__((unused)) size_t idx)	 
 {
 	if (char_append)
 		terminal_putchar(char_append);
@@ -58,7 +58,7 @@ void __strn_pad_print(void (*io_out)(char, char*, size_t), char* str_append, cha
 				buf_append[n] = str_append[str_len - size + n];
 		}
 	}
-    
+	
 	buf_append[size] = '\0';
 	return __strn_print(io_out, buf_append, buffer, size, idx);
 }
@@ -189,11 +189,11 @@ size_t __base_vprintf(char* output_buffer, void (*io_func)(char, char*, size_t),
 					uppercase = true;
 				case 'x':
 					if (alternative)
-                    {
+					{
 						if (uppercase)
-                        	__str_print(io_func, "0X", output_buffer, &idx);
-                        else
-                            __str_print(io_func, "0x", output_buffer, &idx);
+							__str_print(io_func, "0X", output_buffer, &idx);
+						else
+							__str_print(io_func, "0x", output_buffer, &idx);
 					}
 
 					__strn_pad_print(
@@ -208,7 +208,7 @@ size_t __base_vprintf(char* output_buffer, void (*io_func)(char, char*, size_t),
 					break;
 				case 'o':
 					if (alternative)
-                       io_func('0', output_buffer, idx++);
+					   io_func('0', output_buffer, idx++);
 
 					__strn_pad_print(
 						io_func,
@@ -264,7 +264,7 @@ size_t __base_vprintf(char* output_buffer, void (*io_func)(char, char*, size_t),
 Internal printf functions.
 */
 
-size_t __vprintf(const char* restrict text, va_list variadic_list)                             
+size_t __vprintf(const char* restrict text, va_list variadic_list)							 
 { 
 	return __base_vprintf(NULL, __tty_printio, text, -1, variadic_list);
 }
@@ -274,7 +274,7 @@ size_t __vsnprintf(char* buffer, const char* restrict text, size_t max, va_list 
 	return __base_vprintf(buffer, __buf_printio, text, max, variadic_list); 
 }
 
-size_t __vsprintf(char* buffer, const char* restrict text, va_list variadic_list)              
+size_t __vsprintf(char* buffer, const char* restrict text, va_list variadic_list)			  
 { 
 	return __vsnprintf(buffer, text, -1, variadic_list); 
 }
