@@ -62,7 +62,36 @@ const char* __strchr(const char* scan, int character)
 // [bjrkk] FIXME: Probably a bad idea...
 char* __strcpy(char* dest, const char* src) 
 { 
-	return (char*)__memcpy(dest, src, __strlen(src)); 
+	return (char*)__memcpy(dest, src, __strlen(src) + 1);
+} // I think this is how gclib does it? With the +1? 
+
+
+/* FIXME the strspn & strcspn functions are better done
+ * with lookup tables */
+size_t* __strspn (const char *str, const char *chars)
+{ // This is probably terrible.
+	int count = 0;
+	do 
+	{
+		if (str[count] != chars[count]) return count;
+		count++;
+	} while (count <= sizeof(chars));
+}
+
+size_t* __strcspn(const char *str, const char *chars)
+{ // THIS IS GUARANTEED TERRIBLE
+	int str_i = 0;
+	int chars_i = 0;
+	do
+	{
+		if (str[str_i] == chars[chars_i]) return str_i;
+		str_i++;
+		if (str_i >= sizeof(chars))
+		{
+			str_i = 0;
+			chars_i++;	
+		}	
+	} while (str_i <= sizeof(chars));	
 }
 
 /*

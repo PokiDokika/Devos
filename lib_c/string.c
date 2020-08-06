@@ -54,6 +54,14 @@ char* strcpy(char* dest, const char* src)
 { 
     return __strcpy(dest, src); 
 }
+size_t strspn(const char* str, const char* chars)
+{
+    return __strspn(str, chars);
+}
+size_t strcspn(const char* str, const char* chars)
+{
+	return __strcspn(str, chars);
+}
 int strcmp(const char* str1, const char* str2)               
 { 
     return __strcmp(str1, str2); 
