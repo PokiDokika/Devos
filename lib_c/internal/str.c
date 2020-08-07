@@ -31,15 +31,15 @@ char* __strcat(char* dest, const char* src)
 char* __strstr(char* scan, char* sequence)
 {
 	char* seq_ptr;
-    char* scan_ptr;
+	char* scan_ptr;
 
 	for (; *scan; scan++)
 	{
-        seq_ptr = sequence;
-        scan_ptr = scan;
-        for (; *seq_ptr && *seq_ptr == *scan_ptr++; seq_ptr++);
+		seq_ptr = sequence;
+		scan_ptr = scan;
+		for (; *seq_ptr && *seq_ptr == *scan_ptr++; seq_ptr++);
 
-        if (!*seq_ptr)
+		if (!*seq_ptr)
 			return scan;
 	}
 
@@ -56,10 +56,10 @@ int __strcmp(const char* str1, const char* str2)
 const char* __strchr(const char* scan, int character)
 {
 	for (; *scan != character && character && *scan; scan++);
-    if (!*scan)
-        return NULL;
+	if (!*scan)
+		return NULL;
 	
-    return scan;
+	return scan;
 }
 
 // [bjrkk] FIXME: Probably a bad idea...
@@ -97,7 +97,7 @@ size_t __strcspn(const char *str, const char *chars)
 	// THIS IS GUARANTEED TERRIBLE
 	// ^ [bjrkk] gotcha again fam
 
-    size_t count = 0;
+	size_t count = 0;
 	const char* chr_ptr;
 	
 	for (; str[count]; count++)
