@@ -39,10 +39,10 @@ void shell_removechar () {
 }
 
 void shell_newline () {
+	cmd[index] = '\0';
 	putc('\n');
 	if (cmd [0] != '\0') {
 		shell_command(cmd);
-		memset(cmd, '\0', index);
 	}
 	index = 0;
 	printf ("\nDevos> ");
@@ -56,10 +56,10 @@ void shell () {
 		key = get_key ();
 		char c = get_char (key);
 		switch (c) {
-			case 0 		: break;
-			case '\r' 	: shell_newline (); break;
-			case '\b' 	: shell_removechar (); break;
-			default   	: shell_putchar (c); break;
+			case 0		: break;
+			case '\r'	: shell_newline (); break;
+			case '\b'	: shell_removechar (); break;
+			default		: shell_putchar (c); break;
 		}
 	}
 }
