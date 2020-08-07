@@ -9,16 +9,15 @@
 size_t __strlen(const char* str)
 {
 	size_t return_val = 0; 
-	for (; *(str + return_val); return_val++);
+	for (; str[return_val]; return_val++);
 	return return_val;
 }
 
 char* __strncat(char* dest, const char* src, size_t num)		  
 { 
-	char* end_dest = dest + __strlen(dest);
-
+	for (; *dest; dest++);
 	for (size_t i = 0; i < num && src[i]; i++)
-		end_dest[i] = src[i];
+		dest[i] = src[i];
 
 	return dest;
 }
@@ -31,16 +30,16 @@ char* __strcat(char* dest, const char* src)
 
 char* __strstr(char* scan, char* sequence)
 {
-	size_t sequ_length = __strlen(sequence);
+	char* seq_ptr;
+    char* scan_ptr;
 
 	for (; *scan; scan++)
 	{
-		size_t match = 0;
-		for (size_t j = 0; j < sequ_length; j++) 
-			if (*(scan + j) == sequence[j]) 
-				match++;
+        seq_ptr = sequence;
+        scan_ptr = scan;
+        for (; *seq_ptr && *seq_ptr == *scan_ptr++; seq_ptr++);
 
-		if (match == sequ_length) 
+        if (!*seq_ptr)
 			return scan;
 	}
 
@@ -56,11 +55,11 @@ int __strcmp(const char* str1, const char* str2)
 
 const char* __strchr(const char* scan, int character)
 {
-	for (; *scan != character; scan++)
-		if (character != '\0' && *scan == '\0')
-			return NULL;
-		
-	return scan;
+	for (; *scan != character && character && *scan; scan++);
+    if (!*scan)
+        return NULL;
+	
+    return scan;
 }
 
 // [bjrkk] FIXME: Probably a bad idea...
@@ -78,17 +77,17 @@ size_t __strspn(const char *str, const char *chars)
 	// ^ [bjrkk] gotcha fam
 
 	size_t count = 0;
-
-	const char* str_ptr = str;
 	const char* chr_ptr;
-	
-	for (; *str_ptr; str_ptr++)
-		for (chr_ptr = chars; *chr_ptr; chr_ptr++)
-			if (*str_ptr == *chr_ptr)
-			{
-				count++;
-				break;
-			}
+
+	for (; *str; str++)
+	{
+		for (chr_ptr = chars; *chr_ptr && *chr_ptr != *str; chr_ptr++);
+		
+		if (*chr_ptr)
+			count++;
+		else
+			break;
+	}
 
 	return count;
 }
@@ -98,16 +97,16 @@ size_t __strcspn(const char *str, const char *chars)
 	// THIS IS GUARANTEED TERRIBLE
 	// ^ [bjrkk] gotcha again fam
 
-	const char* str_ptr = str;
+    size_t count = 0;
 	const char* chr_ptr;
 	
-	for (; *str_ptr; str_ptr++)
+	for (; str[count]; count++)
 		for (chr_ptr = chars; *chr_ptr; chr_ptr++)
-			if (*str_ptr == *chr_ptr)
+			if (str[count] == *chr_ptr)
 				goto L;
 
 	L:
-	return (size_t)(str_ptr - str);
+	return count;
 }
 
 /*
@@ -118,10 +117,8 @@ char* __strupr(char* str)
 {
 	for (; *str; str++)
 	{
-		char c = *str;
-		if (c >= 'a' && c <= 'z') 
-			c -= 32;
-		*str = c;
+		if (*str >= 'a' && *str <= 'z') 
+			*str -= 32;
 	}
 	
 	return str;
@@ -131,10 +128,8 @@ char* __strlwr(char* str)
 {
 	for (; *str; str++)
 	{
-		char c = *str;
-		if (c >= 'A' && c <= 'Z') 
-			c += 32;
-		*str = c;
+		if (*str >= 'A' && *str <= 'Z') 
+			*str += 32;
 	}
 
 	return str;

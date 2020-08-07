@@ -14,6 +14,7 @@ char* __strncat(char*, const char*, size_t);
 
 char* __strstr(char*, char*);
 char* __strcpy(char*, const char*);
+const char* __strchr(const char*, int);
 size_t __strspn(const char*, const char*);
 size_t __strcspn(const char*, const char*);
 

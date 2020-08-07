@@ -54,6 +54,10 @@ char* strcpy(char* dest, const char* src)
 { 
 	return __strcpy(dest, src);
 }
+const char* strchr(const char* scan, int character)
+{
+	return __strchr(scan, character);
+}
 size_t strspn(const char* str, const char* chars)
 {
 	return __strspn(str, chars);

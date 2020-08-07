@@ -4,7 +4,8 @@
 void* __memset(void* ptr, int value, size_t num) 
 {
 	unsigned char* buf_ptr = (unsigned char*)ptr;
-	for (; num; num--) *(buf_ptr++) = value;
+	for (; num; num--) 
+		*(buf_ptr++) = value;
 	return ptr;
 }
 
