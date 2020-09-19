@@ -51,9 +51,6 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-# Poki's script that builds the program (instructions to build in the README)
-make.sh
-
 # No bins or ISOs 
 *.bin
 *.iso
