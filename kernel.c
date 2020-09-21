@@ -13,7 +13,6 @@
 #endif
  
 #define K_VERSION "0.01"
-#define MAGIC_NUMBER 0xDEADBEEF
 
 // [bjrkk] Probably should remove this later on :v
 int generate_magic_number()
