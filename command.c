@@ -30,7 +30,7 @@ void cmd_run()
 	char* cmd_name = &cmd[0];
 	char* cmd_args = &cmd[0];
 
-	for (;; cmd_args++)
+	for (; *cmd_args; cmd_args++)
 		if (*cmd_args == ' ')
 		{
 			*cmd_args = '\0';
