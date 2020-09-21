@@ -35,10 +35,10 @@ static inline uint16_t vga_entry (unsigned char uc, uint8_t color) {
 static const size_t VGA_WIDTH = 80;
 static const size_t VGA_HEIGHT = 25;
 
-static size_t terminal_row;
-static size_t terminal_column;
-static uint8_t terminal_color;
-static uint16_t* terminal_buffer;
+extern size_t terminal_row;
+extern size_t terminal_column;
+extern uint8_t terminal_color;
+extern uint16_t* terminal_buffer;
 
 void terminal_clear();
 void terminal_initialize(void);
