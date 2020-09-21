@@ -78,6 +78,12 @@ void terminal_newline () {
 			VGA_WIDTH * VGA_HEIGHT * sizeof(terminal_buffer[0])
 		);
 
+		for (size_t x = 0; x < VGA_WIDTH; x++) 
+		{
+			const size_t index = (VGA_HEIGHT - 1) * VGA_WIDTH + x;
+			terminal_buffer[index] = vga_entry(' ', terminal_color);
+		}
+
 		terminal_row--;
 	}
 	
