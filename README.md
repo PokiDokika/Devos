@@ -1,8 +1,8 @@
 # Devos
-An experimental operating system
+An experimental operating system.
 
 ### Contributing
-This project's goal is just to get an operating system made. It is merely a hobbyist project and the goal of it is to learn more about how operating systems work. Please feel free to contribute to the project by improving code, adding new functionalities or making anything that works.
+This project's goal is just to make an operating system. It is merely a hobbyist project with the goal of learning more about how operating systems work. Please feel free to contribute to the project by improving code, adding new functionalities or making anything that (hopefully) works.
 
 
 ### Building
@@ -14,7 +14,7 @@ It'll automatically make an ISO image in the specified build directory in the sc
 
 
 ### Goals
-Just a list of things that would be nice to have in the OS but isn't done yet. (most likely due to lack of os theory)
+Just a list of things that would be nice to have in the OS but hasn't been done yet. (most likely due to lack of os theory)
 
 - Support for hard disks (ATA probably)
 - Actual commands that aren't baked in (loading binary files I guess)
