@@ -12,12 +12,3 @@ Modify `build/compile.sh` if needed, and run it. `build/compile_run.sh` will run
 To build an ISO you need the following `libisoburn mtools` (grub-mkconfig is also needed but comes with grub)
 It'll automatically make an ISO image in the specified build directory in the script.
 
-
-### Goals
-Just a list of things that would be nice to have in the OS but hasn't been done yet. (most likely due to lack of os theory)
-
-- Support for hard disks (ATA probably)
-- Actual commands that aren't baked in (loading binary files I guess)
-- Support for other things than VGA
-- 64-bit?
-- (some) POSIX compliancy
